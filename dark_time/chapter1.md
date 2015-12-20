@@ -74,9 +74,10 @@
        1. 分析问题和解决问题的思维方式
        2. 判断和决策的方法
        
+>  All life is Proble-Solving
 
-    ** All life is Proble-Solving**
-    ** 糟糕的决定会令我们的生活变坏， 要命的是我们并不会质疑我们的判断，总会找到时的那哥的理由（mistakes were made, but not by me）**
+>  糟糕的决定会令我们的生活变坏， 要命的是我们并不会质疑我们的判断，总会找到时的那哥的理由（mistakes were made, but not by me）
+
     
 
        
