@@ -76,7 +76,7 @@
        
 >  All life is Proble-Solving
 
->  糟糕的决定会令我们的生活变坏， 要命的是我们并不会质疑我们的判断，总会找到时的那哥的理由（mistakes were made, but not by me）
+>  糟糕的决定会令我们的生活变坏， 要命的是我们并不会质疑我们的判断，总会找到那个合适的理由（mistakes were made, but not by me）
 
     
 
