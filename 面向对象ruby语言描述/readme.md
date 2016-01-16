@@ -18,6 +18,145 @@
      2. 设计的时机： 反复的应用，不进行大规模的预先设计，设计应该发生在项目的过程中，不断的迭代的一个过程
      3. 设计评判：1. 设计需要代价 2. 设计的盈亏点依赖于工程师（时间表、能力）
  > 实践是检验真理的唯一标准， 实践会弄脏你的双手、是充满选择的。
+ 
+            面向对象设计问题是----------需求的变化。
+            面向对象设计本质是----------依赖关系的管理
+            警示：小的坏的程序不太可能形成好的大的程序（当然可以通过重构来实现， 但是不应该期待谁能重构它）
 
 2. 设计单一职责
-   > 问题： 
+   1. 如何确定一个类是否具有单一职责
+      > 1. 将类的每个方法都改述为一个问题（例如：齿轮请问你的直径多大） 2. 尝试使用一句话描述方法做的事情，这件事情的描述应该很简单。而不是需要使用 “和” 这样的字眼。
+   2. 解决问题的方法
+      1. 依赖行为而不是数据（变量） // ruby中对这样的支持非常好， att_accessor 等元编程
+      2. 隐藏数据结构。
+
+         ```
+         代码示例
+         class Example
+            attr_reader :data
+            // data 的数据结构应该为[[one, two], [three, four]]
+            def initialize(data)
+                @data = data
+            end
+
+
+            def sum
+                data.inject(0) do |sum, item|
+                    sum += item[0] * item[1]
+                end
+            end
+         end
+         // 重构之后的代码 （这里使用了额外的类，来隔离具体的数据结构）
+         class Example
+            attr_read :data
+            def initialize(data)
+                @data = data.map do |item|
+                    Infer.new(item[0], item[1])
+                end
+            end
+
+            def sum
+                @data.inject(0) &:product
+            end
+         end
+         
+         class Infer
+            attr_reader :one, :two
+            def initialize(one, two)
+                @one, @two = one, two
+            end
+            
+            def product
+                one * two
+            end
+         end
+         
+         ```
+     3. 将外在的依赖关系尽量的隔离开来
+     > 将经常重复的代码封装，将对外在的依赖尽量隔离在一个地方（建立单独的方法，统一隔离对外在的依赖关系，思想类似与 依赖方法而不是数据）
+
+3. 管理依赖关系
+> 消息的三中类型， 1. 自身实现 2. 继承 3. 依赖（指代发送消息）
+    1. 问题： 什么是依赖关系（个人认为3. 4 没有太多用处，虽然ruby中可以广泛的应用hash传递参数，但是依然没有避免参数的依赖）
+       1. 另一个类的名字。 代表自身期待另一个类的存在
+       2. 消息的名字。
+       3. 消息所需要的参数。
+       4. 参数的顺序
+    2. 解决依赖关系的方法
+       1. 注入依赖关系（依赖注入）
+       
+       ```
+       class Gear
+           attr_reader :chainring, :cog, :rim, :tire
+           def initialize(chainring, cog, rim, trie)
+               @chaining = chainring
+               @cog = cog
+               @rim = rim
+               @tire = tire
+           end
+
+           def gear_inches
+            ratio * Wheel.new(rim, tire).diameter
+           end
+       end
+       Gear.new(10, 10, 10, 10).gear_inches
+
+       //重构之后代码
+        class Gear
+            attr_reader :chainring, :cog, :wheel
+            def initialize(chainring, cog, wheel)
+                @chainring = chanring
+                @cog = cog
+                @wheel = wheel
+            end
+            def get_inches
+                ratio * wheel.diameter
+            end
+        end
+        Gear.new(10, 10, Wheel.new(12, 10)).gear_inches
+       ```
+    2. 隔离脆弱的外部信息
+    
+    ```
+    def gear_inches
+        ratio * wheel.diameter
+    end
+
+    def gear_inches
+        // ......
+        wheel.diameter
+        //......
+    end
+    现在对wheel.diameter的引用嵌入在一个复杂的应用过程中， 这样做会变得更加脆弱
+    def gear_inches
+        //.....
+        diameter
+        //.....
+    end
+    
+    def diameter
+        wheel.diameter
+    end
+    移除依赖关系，并将其封装在自己的某个方法中
+    
+    ```
+    
+    > 当一个类包含了对某个可能发生变化的消息的嵌入引用时，这样的技术变得非常有用。另一种方法为：将依赖关系反转（后面）
+    3. 为什么需要管理依赖关系：
+       1. 依赖关系是可以被改变的（通过函数的参数改变）
+       2. 依赖关系的方向的选择会对未来的变化产生影响
+    4. 选择依赖方向：
+       1. 有些类比其他类更容易发生变化
+       2. 具体类比抽象类更容易发生变化（例如ruby中方法参数建立在抽象上，java建立在具体类上）
+       3. 更改拥有多的依赖关系的类会造成广泛的影响
+       > 依赖于那些变化情况比你所做的更改还要少的事情
+4. 创建灵活的接口（类里面的接口）
+   1. 什么是接口
+      1. 暴露了其主要职责
+      2. 期望被其他对象调用
+      3. 不容易改变
+      4. 对其他依赖它的对象来说是安全的
+      5. 在测试里面被详尽描述的
+      > 找出并定义公共接口是一种艺术，它呈现出一种设计挑战，因为这里没有现成的规则可以使用。并且很难从错误中学习
+   2. 更好的找出接口
+      > 关注消息，而非领域对象。绘制时序图来明确消息的传递，并提问做什么，而不是如何做！
