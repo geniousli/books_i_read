@@ -136,7 +136,7 @@
 
 * 在一个纯粹的原型模式中，我们会摒弃类，转而专注于类。基于原型的继承相比基于类的继承在概念上更为简单，一个新对象可以继承一个就对象的属性，这样可以避免把一个应用拆解成一系列的嵌套抽象类的分类过程。
 
-    ```js
+    >
         var myMammal = function(){
             name: 'mammal';
             get_name: function(){
@@ -154,7 +154,7 @@
             console.log('xxxxx');
         }
         // 差异化 继承， 通过定制新的对象，区别继承的对象
-    ```
+
 ###### 函数化继承方式
 
 * 创建一个对象
@@ -164,9 +164,9 @@
 
     ```js
     
-    var mammal = function(spec){
-        var that = {};
-        that.get_name = function(){
+        var mammal = function(spec){
+            var that = {};
+            that.get_name = function(){
             return spec.name;
         };
         that.says = function(){
@@ -174,7 +174,7 @@
         }
         return that;
     }
-    var mammal = mammal({name: 'xx'});
+        var mammal = mammal({name: 'xx'});
     
      Object.method('superior', function(name){
         var that = this,
@@ -195,12 +195,9 @@
         that.purr = function(){
             console.log('purr ------');
         }
-        
-        return that;
-    }
-    var myCat = cat({name: 'xx'});
-
-    ```
+            return that;
+        }
+        var myCat = cat({name: ```
 #### 方法
 
 *  Array
